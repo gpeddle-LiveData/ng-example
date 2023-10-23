@@ -1,0 +1,428 @@
+openapi: 3.0.0
+info:
+  title: NG-Example Healthcare Domain API
+  version: 0.0.1
+  description: API for managing Patients, Cases, Panels, Providers, Procedures, Hospitals, Practices, Specialties, and Rooms in the healthcare domain.
+servers:
+  - url: https://api.orgname-livedata.com/healthcare
+paths:
+  /patients:
+    get:
+      summary: Get a list of patients
+      responses:
+        '200':
+          description: A list of patients
+    post:
+      summary: Create a new patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '201':
+          description: The newly created patient
+  /patients/{patientID}:
+    get:
+      summary: Get patient by ID
+      parameters:
+        - in: path
+          name: patientID
+          required: true
+          schema:
+            type: string
+          description: The ID of the patient to retrieve
+      responses:
+        '200':
+          description: The patient with the specified ID
+        '404':
+          description: Patient not found
+    put:
+      summary: Update patient information
+      parameters:
+        - in: path
+          name: patientID
+          required: true
+          schema:
+            type: string
+          description: The ID of the patient to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '200':
+          description: Patient information updated
+        '404':
+          description: Patient not found
+    delete:
+      summary: Delete a patient
+      parameters:
+        - in: path
+          name: patientID
+          required: true
+          schema:
+            type: string
+          description: The ID of the patient to delete
+      responses:
+        '204':
+          description: Patient deleted
+  /providers:
+    get:
+      summary: Get a list of providers
+      responses:
+        '200':
+          description: A list of providers
+    post:
+      summary: Create a new provider
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Provider'
+      responses:
+        '201':
+          description: The newly created provider
+  /providers/{providerID}:
+    get:
+      summary: Get provider by ID
+      parameters:
+        - in: path
+          name: providerID
+          required: true
+          schema:
+            type: string
+          description: The ID of the provider to retrieve
+      responses:
+        '200':
+          description: The provider with the specified ID
+        '404':
+          description: Provider not found
+    put:
+      summary: Update provider information
+      parameters:
+        - in: path
+          name: providerID
+          required: true
+          schema:
+            type: string
+          description: The ID of the provider to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Provider'
+      responses:
+        '200':
+          description: Provider information updated
+        '404':
+          description: Provider not found
+    delete:
+      summary: Delete a provider
+      parameters:
+        - in: path
+          name: providerID
+          required: true
+          schema:
+            type: string
+          description: The ID of the Provider to delete
+      responses:
+        '204':
+          description: Provider deleted
+  /providers/search:
+    get:
+      summary: Search for providers
+      parameters:
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+          description: The partial name of the provider to search for
+      responses:
+        '200':
+          description: A list of providers matching the search criteria
+  /cases:
+    get:
+      summary: Get a list of cases
+      responses:
+        '200':
+          description: A list of cases
+    post:
+      summary: Create a new case
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Case'
+      responses:
+        '201':
+          description: The newly created case
+  /procedures:
+    get:
+      summary: Get a list of procedures
+      responses:
+        '200':
+          description: A list of procedures
+    post:
+      summary: Create a new procedure
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Procedure'
+      responses:
+        '201':
+          description: The newly created procedure
+  /procedures/search:
+    get:
+      summary: Search for procedures
+      parameters:
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+          description: The partial name of the procedure to search for
+      responses:
+        '200':
+          description: A list of procedures matching the search criteria
+  /hospitals/{hospitalID}/rooms:
+    get:
+      summary: Get rooms associated with a hospital
+      parameters:
+        - in: path
+          name: hospitalID
+          required: true
+          schema:
+            type: string
+          description: The ID of the hospital to retrieve rooms for
+      responses:
+        '200':
+          description: A list of rooms associated with the hospital
+        '404':
+          description: Hospital not found
+  /practices/{practiceID}/providers:
+    get:
+      summary: Get providers associated with a practice
+      parameters:
+        - in: path
+          name: practiceID
+          required: true
+          schema:
+            type: string
+          description: The ID of the practice to retrieve providers for
+      responses:
+        '200':
+          description: A list of providers associated with the practice
+        '404':
+          description: Hospital not found
+  /errors:
+    post:
+      summary: Log an error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errorType:
+                  type: string
+                message:
+                  type: string
+      responses:
+        '201':
+          description: Error logged
+# Commmands
+  /cases/{caseID}/create-panel:
+      post:
+        summary: Associate a panel with a case
+        parameters:
+          - in: path
+            name: caseID
+            required: true
+            schema:
+              type: string
+            description: The ID of the case to associate with the panel
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Panel'
+        responses:
+          '201':
+            description: Panel associated with the case
+          '404':
+            description: Case not found
+  /cases/{caseID}/update-panel:
+      post:
+        summary: Update a panel for a case
+        parameters:
+          - in: path
+            name: caseID
+            required: true
+            schema:
+              type: string
+            description: The ID of the case to associate with the panel
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Panel'
+        responses:
+          '201':
+            description: Panel associated with the case
+          '404':
+            description: Case not found
+  /panels/{panelID}/associate-procedure:
+    post:
+      summary: Associate a procedure with a panel
+      parameters:
+        - in: path
+          name: panelID
+          required: true
+          schema:
+            type: string
+          description: The ID of the panel to associate with the procedure
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Procedure'
+      responses:
+        '201':
+          description: Procedure associated with the panel
+        '404':
+          description: Panel not found
+components:
+  schemas:
+    Patient:
+      type: object
+      properties:
+        PatientID:
+          type: string
+          format: uuid
+        FirstName:
+          type: string
+        LastName:
+          type: string
+        Phone:
+          type: string
+        Email:
+          type: string
+          format: email
+    Case:
+      type: object
+      properties:
+        CaseID:
+          type: string
+          format: uuid
+        CaseType:
+          type: string
+        PatientID:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        panels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Panel'
+    Panel:
+      type: object
+      properties:
+        PanelID:
+          type: string
+          format: uuid
+        Providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+        Procedures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Procedure'
+# Immutable objects from Lookup Domain
+    Procedure:
+      type: object
+      properties:
+        ProcedureID:
+          type: string
+          format: uuid
+        Name:
+          type: string
+        Code:
+          type: string
+    Provider:
+      type: object
+      properties:
+        ProviderID:
+          type: string
+          format: uuid
+        FirstName:
+          type: string
+        LastName:
+          type: string
+        Specialization:
+          type: string
+        Phone:
+          type: string
+        Email:
+          type: string
+          format: email
+        Practice:
+          type: object
+          items:
+            $ref: '#/components/schemas/Practice'
+    Practice:
+      type: object
+      properties:
+        PracticeID:
+          type: string
+          format: uuid
+        Name:
+          type: string
+    Specialty:
+      type: object
+      properties:
+        SpecialtyID:
+          type: string
+          format: uuid
+        Name:
+          type: string
+# Immutable objects from Config Domain
+    Organization:
+      type: object
+      properties:
+        OrganizationID:
+          type: string
+          format: uuid
+        Name:
+          type: string
+    Hospital:
+      type: object
+      properties:
+        HospitalID:
+          type: string
+          format: uuid
+        Name:
+          type: string
+    Room:
+      type: object
+      properties:
+        RoomID:
+          type: string
+          format: uuid
+        Name:
+          type: string
